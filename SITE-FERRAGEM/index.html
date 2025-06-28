@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Ferragem - Bem-vindo</title>
+  <!-- Link para o CSS -->
+  <link rel="stylesheet" href="style.css" />
+  <!-- Font Awesome para ícones -->
+  <link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+  />
+</head>
+<body>
+
+  <!-- Navbar -->
+  <header class="navbar">
+    <img src="logo.svg" alt="Logo" class="logo-img" />
+    <a href="ferragem.html" class="logo-nome-link">Materiais Disponiveis</a> <!-- link para página produtos -->
+  </header>
+  
+  <!-- Container principal dividido em duas colunas -->
+  <main class="container">
+    
+    <!-- Coluna esquerda: texto animado + barras coloridas + contatos -->
+    <section class="texto-esquerdo">
+      <h1 id="bemvindo-texto"></h1> <!-- Texto animado -->
+      
+      <!-- Barras coloridas -->
+      <div class="barras-coloridas">
+        <div class="barra vermelho"></div>
+        <div class="barra preto"></div>
+        <div class="barra azul"></div>
+      </div>
+
+      <!-- Contatos -->
+      <h2>Fale Conosco:</h2> 
+      <div class="contatos">
+        <a href="#" onclick="mostrarContatos(); return false;" class="contato" title="Telefone: +258840000000 e +258870000000">
+          <i class="fas fa-phone"></i><span>Telefone</span>
+        </a>
+        <a href="https://wa.me/258842864400" target="_blank" class="contato" title="Enviar WhatsApp para a ferragem">
+          <i class="fab fa-whatsapp"></i><span>WhatsApp</span>
+        </a>
+        <a href="mailto:exemplo@gmail.com" target="_blank" class="contato" title="Enviar email para a ferragem">
+          <i class="fas fa-envelope"></i><span>Email</span>
+        </a>
+      </div>
+      
+      <!-- Informações da loja -->
+        <div class="informacoes-loja" style="margin-top: 20px;">
+          <p> <a href="https://maps.google.com/?q=Machava+Km15+Matola" target="_blank" style="color: white; text-decoration: underline;">Encontre nos</a></p>
+          <p><strong>Proprietário:</strong> João da Silva</p>
+        </div>
+        
+    </section>
+
+    <!-- Coluna direita: imagem dentro de triângulo com barras laterais -->
+    <section class="imagem-direito">
+      <div class="imagem-triangulo">
+        <img src="ferragem.jpg" alt="Ferreiro" />
+        <div class="barras-laterais">
+          <div class="barra vermelho"></div>
+          <div class="barra preto"></div>
+          <div class="barra azul"></div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Rodapé -->
+  <footer class="footer">
+    <div class="direitos">
+      © 2025 Casa Ferragem - Criado pela empresa T&T
+    </div>
+  </footer>
+
+  <!-- Script JS -->
+  <script src="script.js"></script>
+</body>
+</html>

@@ -1,0 +1,832 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Casa Ferragem - Encomendas & Experiências</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet" />
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Montserrat', sans-serif;
+    }
+    body {
+      background: linear-gradient(135deg, #353568, #0746f3);
+      min-height: 100vh;
+      color: black;
+      display: flex;
+      flex-direction: column;
+    }
+    header {
+      background: #d90000;
+      color: white;
+      padding: 20px;
+      text-align: center;
+      font-size: 24px;
+      font-weight: bold;
+      position: relative;
+    }
+    .logout-btn {
+      position: absolute;
+      right: 20px;
+      top: 20px;
+      background: white;
+      color: #d90000;
+      border: none;
+      padding: 6px 12px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: bold;
+      transition: background 0.3s, color 0.3s;
+    }
+    .logout-btn:hover {
+      background: #a30000;
+      color: white;
+    }
+    nav {
+      background: #f4f4f4;
+      display: flex;
+      justify-content: center;
+      gap: 30px;
+      padding: 15px 0;
+      border-bottom: 2px solid #d90000;
+      font-weight: 600;
+    }
+    nav button {
+      background: none;
+      border: none;
+      font-size: 16px;
+      cursor: pointer;
+      color: #555;
+      padding: 8px 16px;
+      border-radius: 6px;
+      transition: background 0.3s, color 0.3s;
+    }
+    nav button.active, nav button:hover {
+      background: #d90000;
+      color: white;
+    }
+    main {
+      flex: 1;
+      max-width: 1200px;
+      margin: 30px auto;
+      padding: 0 20px;
+      min-height: 400px;
+    }
+
+    /* Produtos organizados em grid com cards clicáveis */
+    .produtos {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr); /* 4 colunas no desktop */
+  gap: 20px;
+  animation: fadeIn 0.5s ease-in;
+}
+
+@media (max-width: 900px) {
+  .produtos {
+    grid-template-columns: repeat(2, 1fr); /* 2 colunas em tablets */
+  }
+}
+
+@media (max-width: 600px) {
+  .produtos {
+    grid-template-columns: 1fr; /* 1 coluna em celular */
+  }
+}
+
+    .produto {
+      border: 2px solid #d90000;
+      border-radius: 10px;
+      overflow: hidden;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+      background: white;
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      transition: transform 0.3s, box-shadow 0.3s;
+    }
+    .produto:hover, .produto:focus {
+      transform: translateY(-5px);
+      box-shadow: 0 10px 20px rgba(217,0,0,0.4);
+      outline: none;
+    }
+    .produto img {
+      width: 100%;
+      height: 200px;
+      object-fit: cover;
+    }
+    .produto .info {
+      padding: 15px;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+    .produto .info h3 {
+      color: #222;
+      margin-bottom: 8px;
+      font-size: 18px;
+      font-weight: 700;
+    }
+    .produto .info p {
+      font-size: 14px;
+      color: #555;
+      margin-bottom: 10px;
+      flex-grow: 1;
+    }
+    .produto .info .preco {
+      color: #d90000;
+      font-weight: bold;
+      font-size: 16px;
+    }
+
+    /* Modal de detalhes do produto */
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 2000;
+      left: 0;
+      top: 0;
+      width: 100vw;
+      height: 100vh;
+      background: rgba(0,0,0,0.6);
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+    .modal.active {
+      display: flex;
+    }
+    .modal-content {
+      background: white;
+      border-radius: 12px;
+      max-width: 600px;
+      width: 100%;
+      max-height: 90vh;
+      overflow-y: auto;
+      padding: 20px;
+      position: relative;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+      animation: modalFadeIn 0.3s ease forwards;
+    }
+    .modal-close {
+      position: absolute;
+      right: 15px;
+      top: 15px;
+      background: transparent;
+      border: none;
+      font-size: 24px;
+      cursor: pointer;
+      color: #d90000;
+      font-weight: bold;
+      transition: color 0.3s;
+    }
+    .modal-close:hover {
+      color: #a30000;
+    }
+    .modal-content img {
+      width: 100%;
+      height: 300px;
+      object-fit: cover;
+      border-radius: 8px;
+      margin-bottom: 15px;
+    }
+    .modal-content h3 {
+      margin-bottom: 10px;
+      color: #222;
+    }
+    .modal-content p {
+      margin-bottom: 10px;
+      color: #444;
+      font-size: 15px;
+      line-height: 1.4;
+    }
+    .modal-content .preco {
+      font-size: 20px;
+      font-weight: bold;
+      color: #d90000;
+      margin-bottom: 15px;
+    }
+    .modal-content label {
+      font-weight: 600;
+      margin-bottom: 5px;
+      display: block;
+    }
+    .modal-content input[type="number"] {
+      width: 70px;
+      padding: 6px 8px;
+      font-size: 16px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      margin-bottom: 15px;
+    }
+    .modal-content button.adicionar {
+      background: #d90000;
+      color: white;
+      border: none;
+      padding: 12px 20px;
+      border-radius: 8px;
+      font-weight: bold;
+      font-size: 16px;
+      cursor: pointer;
+      transition: background 0.3s;
+      width: 100%;
+    }
+    .modal-content button.adicionar:hover {
+      background: #a30000;
+    }
+
+    /* Carrinha lateral */
+    .carrinha-container {
+      position: fixed;
+      top: 80px;
+      right: 20px;
+      width: 350px;
+      max-height: 80vh;
+      background: #fff;
+      border: 2px solid #d90000;
+      border-radius: 10px;
+      box-shadow: 0 0 15px rgba(0,0,0,0.2);
+      display: flex;
+      flex-direction: column;
+      z-index: 1000;
+    }
+    .carrinha-header {
+      background: #d90000;
+      color: white;
+      padding: 10px;
+      font-weight: bold;
+      text-align: center;
+      border-radius: 8px 8px 0 0;
+      cursor: pointer;
+      user-select: none;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 8px;
+    }
+    .carrinha-body {
+      flex: 1;
+      overflow-y: auto;
+      padding: 10px;
+      display: none;
+      flex-direction: column;
+    }
+    .item-carrinha {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid #ddd;
+      padding: 8px 0;
+      font-size: 14px;
+    }
+    .item-carrinha span {
+      flex: 1;
+    }
+    .item-carrinha .qtde {
+      width: 40px;
+      text-align: center;
+    }
+    .item-carrinha .remover-btn {
+      background: transparent;
+      border: none;
+      color: #d90000;
+      font-weight: bold;
+      cursor: pointer;
+      font-size: 18px;
+      margin-left: 10px;
+      transition: color 0.3s;
+    }
+    .item-carrinha .remover-btn:hover {
+      color: #a30000;
+    }
+
+    .entrega-container {
+      padding: 10px 0;
+      border-top: 2px solid #d90000;
+      font-size: 14px;
+    }
+    .entrega-container label {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      cursor: pointer;
+    }
+    .endereco-container {
+      margin-top: 8px;
+      display: none;
+      flex-direction: column;
+      gap: 6px;
+    }
+    .endereco-container input,
+    .endereco-container textarea {
+      width: 100%;
+      padding: 6px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      resize: vertical;
+      font-size: 14px;
+    }
+
+    /* Campo nome cliente */
+    .nome-cliente-container {
+      margin-top: 10px;
+      font-size: 14px;
+    }
+    .nome-cliente-container label {
+      display: block;
+      margin-bottom: 4px;
+      font-weight: 600;
+    }
+    .nome-cliente-container input {
+      width: 100%;
+      padding: 8px;
+      font-size: 14px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+    }
+
+    .total-fatura {
+      padding: 10px 0;
+      font-weight: bold;
+      border-top: 2px solid #d90000;
+      text-align: right;
+      font-size: 16px;
+    }
+
+    .botao-confirmar {
+      background: #d90000;
+      color: white;
+      border: none;
+      width: 100%;
+      padding: 12px;
+      font-size: 16px;
+      font-weight: bold;
+      cursor: pointer;
+      border-radius: 0 0 10px 10px;
+      transition: background 0.3s;
+    }
+    .botao-confirmar:hover {
+      background: #a30000;
+    }
+
+    /* Conteúdo Experiências */
+    #experiencias section {
+      margin-bottom: 20px;
+    }
+    #experiencias h2 {
+      color: #d90000;
+      margin-bottom: 20px;
+      text-align: center;
+    }
+    #experiencias p {
+      max-width: 700px;
+      margin: 0 auto 30px;
+      font-size: 16px;
+      line-height: 1.5;
+      color: #444;
+      text-align: center;
+    }
+    #experiencias .galeria {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 20px;
+      justify-content: center;
+    }
+    #experiencias .galeria img {
+      width: 300px;
+      height: 200px;
+      object-fit: cover;
+      border-radius: 10px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+      cursor: pointer;
+      transition: transform 0.3s;
+    }
+    #experiencias .galeria img:hover {
+      transform: scale(1.05);
+    }
+    footer {
+      background: #222;
+      color: white;
+      text-align: center;
+      padding: 20px;
+      font-size: 14px;
+      margin-top: auto;
+    }
+
+    /* Animação para produtos */
+    @keyframes fadeIn {
+      from {opacity: 0; transform: scale(0.95);}
+      to {opacity: 1; transform: scale(1);}
+    }
+    @keyframes modalFadeIn {
+      from {opacity: 0; transform: translateY(-20px);}
+      to {opacity: 1; transform: translateY(0);}
+    }
+
+    /* Responsivo */
+    @media (max-width: 600px) {
+      .produto {
+        max-width: 100%;
+      }
+      #experiencias .galeria img {
+        width: 100%;
+        height: auto;
+      }
+      nav {
+        gap: 15px;
+      }
+      nav button {
+        padding: 8px 10px;
+        font-size: 14px;
+      }
+      .carrinha-container {
+        width: 90vw;
+        right: 5vw;
+        top: 70px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    Casa Ferragem - Encomendas Online
+    <button class="logout-btn" onclick="window.location.href='index.html'">Sair</button>
+  </header>
+
+  <nav>
+    <button id="btn-encomendas" class="active" onclick="mostrarAba('encomendas')">Encomendas</button>
+    <button id="btn-experiencias" onclick="mostrarAba('experiencias')">Experiências em Obras com Casa Ferragem</button>
+  </nav>
+
+  <main>
+    <!-- Aba Encomendas -->
+    <section id="encomendas">
+      <h2>Materiais Disponíveis</h2>
+      <div class="produtos" id="produtosContainer">
+        <!-- Produtos vão ser renderizados aqui via JS -->
+      </div>
+    </section>
+
+    <!-- Aba Experiências -->
+    <section id="experiencias" style="display:none;">
+      <h2>Experiências em Obras com Casa Ferragem</h2>
+      <p>Conheça alguns dos projetos e instalações onde nossos materiais foram utilizados, garantindo qualidade, resistência e satisfação dos nossos clientes.</p>
+      <div class="galeria">
+        <img src="obra1.jpg" alt="Obra 1" />
+        <img src="obra2.jpg" alt="Obra 2" />
+        <img src="obra3.jpg" alt="Obra 3" />
+      </div>
+    </section>
+  </main>
+
+  <!-- Modal detalhes do produto -->
+  <div class="modal" id="modalProduto" role="dialog" aria-modal="true" aria-labelledby="modalTitulo" aria-describedby="modalDescricao">
+    <div class="modal-content">
+      <button class="modal-close" aria-label="Fechar modal" onclick="fecharModal()">&times;</button>
+      <img id="modalImagem" src="" alt="Imagem do produto" />
+      <h3 id="modalTitulo"></h3>
+      <p id="modalDescricao"></p>
+      <p class="preco" id="modalPreco"></p>
+      <label for="modalQuantidade">Quantidade:</label>
+      <input type="number" id="modalQuantidade" value="1" min="1" />
+      <button class="adicionar" id="btnAdicionarModal">Adicionar à Carrinha</button>
+    </div>
+  </div>
+
+  <!-- Carrinha lateral -->
+  <div class="carrinha-container" id="carrinhaContainer">
+    <div class="carrinha-header" onclick="toggleCarrinha()" role="button" aria-expanded="false" tabindex="0" onkeypress="if(event.key==='Enter'){toggleCarrinha();}">
+      Carrinha 🛒 (<span id="totalItens">0</span>)
+      <small style="font-weight:normal; font-size:12px; margin-left:10px; color:#ffdede;">Clique para abrir/fechar</small>
+    </div>
+    <div class="carrinha-body" id="carrinhaBody" aria-live="polite">
+      <div id="listaItens">
+        <!-- Itens serão inseridos aqui -->
+      </div>
+
+      <div class="nome-cliente-container">
+        <label for="inputNomeProprietario">Seu nome (cliente):</label>
+        <input type="text" id="inputNomeProprietario" placeholder="Digite seu nome aqui" />
+      </div>
+
+      <div class="entrega-container">
+        <label>
+          <input type="checkbox" id="checkboxEntrega" onchange="toggleEndereco()" />
+          Quero entrega ao domicílio (taxa extra conforme distância)
+        </label>
+        <div class="endereco-container" id="enderecoContainer">
+          <label for="inputEndereco">Endereço para entrega:</label>
+          <textarea id="inputEndereco" rows="3" placeholder="Informe seu endereço completo"></textarea>
+        </div>
+      </div>
+
+      <div class="total-fatura" id="totalFatura">Total: MZN 0</div>
+
+      <button class="botao-confirmar" onclick="confirmarCarrinha()">Confirmar Pedido</button>
+    </div>
+  </div>
+
+  <footer>
+    Casa Ferragem &copy; 2025 - Todos os direitos reservados<br />
+    Encomendas com entrega ao domicílio incluem taxa extra conforme a distância.
+  </footer>
+
+  <script>
+    // Produtos - lista ampliada
+    const produtos = [
+      {
+        id: 1,
+        nome: "Ferro-Varalhao CA-50 12mm",
+        descricaoCurta: "Barra resistente para construção civil.",
+        descricaoDetalhada: "Ferro varalhão CA-50 de 12mm, ideal para estruturas e reforços em obras de construção civil. Alta resistência e qualidade certificada.",
+        preco: 650,
+        unidade: "barra",
+        imagem: "vargalhao CA50.jpg",
+        quantidadeMinima: 1
+      },
+      {
+        id: 2,
+        nome: "Areia Lavada (Saco 50kg)",
+        descricaoCurta: "Areia fina para mistura de cimento.",
+        descricaoDetalhada: "Areia lavada de alta pureza, ideal para concreto, argamassa e reboco. Embalada em saco de 50kg para fácil transporte.",
+        preco: 120,
+        unidade: "saco",
+        imagem: "produtos/areia_lavada.jpg",
+        quantidadeMinima: 1
+      },
+      {
+        id: 3,
+        nome: "Cimento CP-II 32,5",
+        descricaoCurta: "Cimento de alta qualidade para construção.",
+        descricaoDetalhada: "Cimento Portland CP-II 32,5, ideal para uso geral em construção civil, com resistência e durabilidade garantidas.",
+        preco: 490,
+        unidade: "saco",
+        imagem: "produtos/cimento_cp2.jpg",
+        quantidadeMinima: 1
+      },
+      {
+        id: 4,
+        nome: "Tijolo Baiano 39x19x14cm",
+        descricaoCurta: "Tijolo para paredes e muros.",
+        descricaoDetalhada: "Tijolo baiano de alta qualidade, fabricado para garantir estabilidade e resistência nas construções residenciais e comerciais.",
+        preco: 20,
+        unidade: "unidade",
+        imagem: "produtos/tijolo_baiano.jpg",
+        quantidadeMinima: 10
+      },
+      {
+        id: 5,
+        nome: "Prego Zincado 3''",
+        descricaoCurta: "Prego resistente para fixação.",
+        descricaoDetalhada: "Prego zincado de 3 polegadas, ideal para uso em madeira e construções leves, com alta resistência à corrosão.",
+        preco: 8,
+        unidade: "pacote (100 unid.)",
+        imagem: "produtos/prego_zincado.jpg",
+        quantidadeMinima: 1
+      },
+      {
+        id: 6,
+        nome: "Tinta Acrílica Fosca 18L",
+        descricaoCurta: "Tinta para acabamento de paredes.",
+        descricaoDetalhada: "Tinta acrílica fosca de alta cobertura, com secagem rápida e resistência a intempéries, ideal para interiores e exteriores.",
+        preco: 3500,
+        unidade: "balde",
+        imagem: "produtos/tinta_acrilica.jpg",
+        quantidadeMinima: 1
+      },
+      {
+        id: 7,
+        nome: "Canaleta Plástica 1m",
+        descricaoCurta: "Canaleta para instalação elétrica.",
+        descricaoDetalhada: "Canaleta plástica resistente e flexível para organização e proteção de fios elétricos em instalações residenciais e comerciais.",
+        preco: 50,
+        unidade: "metro",
+        imagem: "produtos/canaleta_plastica.jpg",
+        quantidadeMinima: 1
+      },
+      {
+        id: 8,
+        nome: "Lâmpada LED 9W",
+        descricaoCurta: "Iluminação econômica e eficiente.",
+        descricaoDetalhada: "Lâmpada LED 9W, alta eficiência energética, longa vida útil e luz branca ideal para iluminação residencial e comercial.",
+        preco: 150,
+        unidade: "unidade",
+        imagem: "produtos/lampara_led.jpg",
+        quantidadeMinima: 1
+      },
+      {
+      id: 9,
+        nome: "Lâmpada LED 9W",
+        descricaoCurta: "Iluminação econômica e eficiente.",
+        descricaoDetalhada: "Lâmpada LED 9W, alta eficiência energética, longa vida útil e luz branca ideal para iluminação residencial e comercial.",
+        preco: 150,
+        unidade: "unidade",
+        imagem: "produtos/lampara_led.jpg",
+        quantidadeMinima: 1
+      }
+    ];
+
+    // Renderiza produtos na página
+    function renderizarProdutos() {
+      const container = document.getElementById('produtosContainer');
+      container.innerHTML = '';
+      produtos.forEach(prod => {
+        const card = document.createElement('article');
+        card.className = 'produto';
+        card.setAttribute('tabindex', '0');
+        card.setAttribute('role', 'button');
+        card.setAttribute('aria-pressed', 'false');
+        card.innerHTML = `
+          <img src="${prod.imagem}" alt="${prod.nome}" />
+          <div class="info">
+            <h3>${prod.nome}</h3>
+            <p>${prod.descricaoCurta}</p>
+            <p class="preco">MZN ${prod.preco} / ${prod.unidade}</p>
+          </div>
+        `;
+        card.addEventListener('click', () => abrirModal(prod.id));
+        card.addEventListener('keypress', e => {
+          if (e.key === 'Enter' || e.key === ' ') {
+            abrirModal(prod.id);
+            e.preventDefault();
+          }
+        });
+        container.appendChild(card);
+      });
+    }
+
+    // Modal produto
+    function abrirModal(produtoId) {
+      const prod = produtos.find(p => p.id === produtoId);
+      if (!prod) return;
+
+      document.getElementById('modalImagem').src = prod.imagem;
+      document.getElementById('modalImagem').alt = prod.nome;
+      document.getElementById('modalTitulo').textContent = prod.nome;
+      document.getElementById('modalDescricao').textContent = prod.descricaoDetalhada;
+      document.getElementById('modalPreco').textContent = `MZN ${prod.preco} / ${prod.unidade}`;
+
+      const qtdInput = document.getElementById('modalQuantidade');
+      qtdInput.value = prod.quantidadeMinima || 1;
+      qtdInput.min = prod.quantidadeMinima || 1;
+
+      const btnAdicionar = document.getElementById('btnAdicionarModal');
+      btnAdicionar.onclick = () => {
+        adicionarCarrinha(prod.nome, prod.preco, qtdInput.value);
+        fecharModal();
+      };
+
+      document.getElementById('modalProduto').classList.add('active');
+      qtdInput.focus();
+    }
+
+    function fecharModal() {
+      document.getElementById('modalProduto').classList.remove('active');
+    }
+
+    // Carrinha
+    let carrinha = [];
+
+    function adicionarCarrinha(produto, preco, quantidade) {
+      let qtd = parseInt(quantidade);
+      if (isNaN(qtd) || qtd < 1) {
+        alert('Informe uma quantidade válida.');
+        return;
+      }
+      const index = carrinha.findIndex(item => item.produto === produto);
+      if (index > -1) {
+        carrinha[index].qtd += qtd;
+      } else {
+        carrinha.push({ produto, preco, qtd });
+      }
+      atualizarCarrinha();
+    }
+
+    function removerItemCarrinha(produto) {
+      carrinha = carrinha.filter(item => item.produto !== produto);
+      atualizarCarrinha();
+    }
+
+    function atualizarCarrinha() {
+      const lista = document.getElementById('listaItens');
+      lista.innerHTML = '';
+      if (carrinha.length === 0) {
+        lista.innerHTML = '<p style="text-align:center; color:#888;">A carrinha está vazia.</p>';
+      } else {
+        carrinha.forEach(item => {
+          const div = document.createElement('div');
+          div.classList.add('item-carrinha');
+          div.innerHTML = `
+            <span>${item.produto}</span>
+            <span class="qtde">x${item.qtd}</span>
+            <span>MZN ${item.preco * item.qtd}</span>
+            <button class="remover-btn" title="Remover" onclick="removerItemCarrinha('${item.produto}')">&times;</button>
+          `;
+          lista.appendChild(div);
+        });
+      }
+      document.getElementById('totalItens').innerText = carrinha.reduce((acc, i) => acc + i.qtd, 0);
+      atualizarTotal();
+    }
+
+    function toggleCarrinha() {
+      const body = document.getElementById('carrinhaBody');
+      const header = document.querySelector('.carrinha-header');
+      if (body.style.display === 'flex') {
+        body.style.display = 'none';
+        header.setAttribute('aria-expanded', 'false');
+      } else {
+        body.style.display = 'flex';
+        header.setAttribute('aria-expanded', 'true');
+      }
+    }
+
+    function toggleEndereco() {
+      const checkbox = document.getElementById('checkboxEntrega');
+      const enderecoDiv = document.getElementById('enderecoContainer');
+      enderecoDiv.style.display = checkbox.checked ? 'flex' : 'none';
+      atualizarTotal();
+    }
+
+    function atualizarTotal() {
+      const total = carrinha.reduce((acc, i) => acc + (i.preco * i.qtd), 0);
+      const entrega = document.getElementById('checkboxEntrega').checked;
+      let taxaEntrega = entrega ? 500 : 0;
+      const totalComEntrega = total + taxaEntrega;
+      document.getElementById('totalFatura').innerText = `Total: MZN ${totalComEntrega} ${entrega ? '(Inclui taxa de entrega MZN 500)' : ''}`;
+    }
+
+    function confirmarCarrinha() {
+      if (carrinha.length === 0) {
+        alert('A carrinha está vazia. Adicione produtos antes de confirmar.');
+        return;
+      }
+
+      const nomeCliente = document.getElementById('inputNomeProprietario').value.trim();
+      if (nomeCliente.length < 3) {
+        alert('Por favor, digite seu nome para continuar.');
+        return;
+      }
+
+      const entrega = document.getElementById('checkboxEntrega').checked;
+      let enderecoEntrega = '';
+      if (entrega) {
+        enderecoEntrega = document.getElementById('inputEndereco').value.trim();
+        if (enderecoEntrega.length < 5) {
+          alert('Por favor, informe o endereço completo para entrega.');
+          return;
+        }
+      }
+
+      const agora = new Date();
+      const dataHora = agora.toLocaleString('pt-PT', { dateStyle: 'short', timeStyle: 'short' });
+
+      let texto = `Encomenda feita em: ${dataHora}\n`;
+      texto += `Cliente: ${nomeCliente}\n\n`;
+      texto += `Produtos:\n`;
+      carrinha.forEach(item => {
+        texto += `- ${item.produto} x${item.qtd} = MZN ${item.preco * item.qtd}\n`;
+      });
+      const total = carrinha.reduce((acc, i) => acc + (i.preco * i.qtd), 0);
+      if (entrega) {
+        texto += `\nEntrega ao domicílio: SIM (Endereço: ${enderecoEntrega})\nTaxa extra: MZN 500\n`;
+      } else {
+        texto += `\nEntrega ao domicílio: NÃO\n`;
+      }
+      const totalComEntrega = entrega ? total + 500 : total;
+      texto += `\nTotal a pagar: MZN ${totalComEntrega}\n\n`;
+      texto += `*Obrigado pela preferência!* 🙏`;
+
+      // window.open por este:
+      const telefoneWhatsApp = '258877743076';
+      const urlWhatsApp = `https://wa.me/${telefoneWhatsApp}?text=${encodeURIComponent(texto)}`;
+
+      window.location.href = urlWhatsApp;
+
+    }
+
+    function mostrarAba(aba) {
+      const abas = ['encomendas', 'experiencias'];
+      abas.forEach(nome => {
+        document.getElementById(nome).style.display = (nome === aba) ? 'block' : 'none';
+        document.getElementById('btn-' + nome).classList.toggle('active', nome === aba);
+      });
+    }
+
+    // Inicialização
+    renderizarProdutos();
+    document.getElementById('carrinhaBody').style.display = 'none';
+
+    // Fecha modal se clicar fora do conteúdo
+    document.getElementById('modalProduto').addEventListener('click', (e) => {
+      if (e.target === e.currentTarget) {
+        fecharModal();
+      }
+    });
+  </script>
+</body>
+</html>

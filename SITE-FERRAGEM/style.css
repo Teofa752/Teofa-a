@@ -1,0 +1,242 @@
+/* Reset básico */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: Arial, sans-serif;
+}
+
+/* Título secundário */
+h2 {
+  font-size: 26px;
+  text-align: center;
+  color: #d90000;
+  margin: 30px 0 40px;
+  font-weight: 700;
+}
+
+/* Fundo gradiente do body */
+body {
+  background-color: #acd7e1d9 !important;
+}
+
+/* --- Navbar --- */
+.navbar {
+  background: rgba(255, 255, 255, 0.9); /* branco semi-transparente */
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px 30px;
+  border-bottom: 2px solid #ddd;
+  backdrop-filter: blur(6px);
+}
+
+.logo-img {
+  height: 40px;
+}
+
+.logo-nome-link {
+  color: #d90000;
+  font-weight: bold;
+  font-size: 24px;
+  text-decoration: none;
+  cursor: pointer;
+  padding: 6px 12px;
+  border: 2px solid #d90000;
+  border-radius: 6px;
+  transition: background-color 0.3s, color 0.3s;
+}
+
+.logo-nome-link:hover {
+  background-color: #d90000;
+  color: white;
+}
+
+/* --- Container principal (2 colunas) --- */
+.container {
+  display: flex;
+  min-height: 85vh;
+  padding: 40px 80px;
+  gap: 50px;
+}
+
+/* --- Coluna esquerda --- */
+.texto-esquerdo {
+  flex: 0.8;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  color: white;
+}
+
+/* Texto animado principal */
+#bemvindo-texto {
+  font-size: 42px;
+  color: #ff4c4c; /* vermelho vivo */
+  font-weight: 900;
+  margin-bottom: 20px;
+  min-height: 60px;
+  text-shadow: 1px 1px 4px rgba(0,0,0,0.6);
+}
+
+/* Barras coloridas abaixo do texto */
+.barras-coloridas {
+  display: flex;
+  gap: 12px;
+  width: 150px;
+  margin-bottom: 40px;
+}
+
+.barra {
+  height: 8px;
+  border-radius: 4px;
+  flex-grow: 1;
+  box-shadow: 0 0 6px rgba(0,0,0,0.3);
+}
+
+/* Cores das barras */
+.vermelho {
+  background-color: #ff4c4c;
+  box-shadow: 0 0 10px #ff4c4caa;
+}
+
+.preto {
+  background-color: #222222;
+  box-shadow: 0 0 8px #222222aa;
+}
+
+.azul {
+  background-color: #0047ab;
+  box-shadow: 0 0 10px #0047abaa;
+}
+
+/* Contatos na coluna esquerda */
+.texto-esquerdo .contatos {
+  display: flex;
+  gap: 35px;
+  justify-content: center;
+}
+
+.texto-esquerdo .contato {
+  color: white;
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 16px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  transition: color 0.3s;
+  text-shadow: 1px 1px 3px rgba(0,0,0,0.5);
+}
+
+.texto-esquerdo .contato i {
+  font-size: 28px;
+  margin-bottom: 6px;
+}
+
+.texto-esquerdo .contato:hover {
+  color: #ff4c4c;
+}
+
+/* Informações da loja */
+.informacoes-loja {
+  margin-top: 20px;
+  text-align: center;
+  font-size: 16px;
+  color: white;
+}
+
+/* --- Coluna direita: imagem dentro de triângulo --- */
+.imagem-direito {
+  flex: 1.2;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* Container triângulo com borda degradê */
+.imagem-triangulo {
+  position: relative;
+  width: 400px;
+  height: 500px;
+  clip-path: polygon(0 0, 100% 0, 100% 100%, 20% 100%);
+  overflow: hidden;
+  border: 10px solid transparent;
+  border-image: linear-gradient(
+    to bottom,
+    #ff4c4c 0%,
+    #222222 40%,
+    #0047ab 100%
+  );
+  border-image-slice: 1;
+}
+
+/* Imagem preenchendo o container */
+.imagem-triangulo img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* Barras laterais animadas */
+.barras-laterais {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 20px;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  padding: 15px 0;
+  justify-content: flex-start;
+  animation: moverBarras 5s linear infinite;
+}
+
+.barras-laterais .barra {
+  width: 100%;
+  height: 40px;
+  border-radius: 6px;
+  box-shadow: 0 0 6px rgba(0, 0, 0, 0.4);
+  animation-name: moverBarras;
+  animation-duration: 5s;
+  animation-timing-function: linear;
+  animation-iteration-count: infinite;
+  animation-direction: alternate;
+}
+
+.barras-laterais .barra:nth-child(1) {
+  animation-delay: 0s;
+}
+
+.barras-laterais .barra:nth-child(2) {
+  animation-delay: 1.5s;
+}
+
+.barras-laterais .barra:nth-child(3) {
+  animation-delay: 3s;
+}
+
+/* Animação das barras (vertical) */
+@keyframes moverBarras {
+  0% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(30px);
+  }
+  100% {
+    transform: translateY(0);
+  }
+}
+
+/* --- Rodapé --- */
+.footer {
+  background-color: rgba(255,255,255,0.85);
+  padding: 25px 30px;
+  text-align: center;
+  border-top: 2px solid #ddd;
+  font-size: 14px;
+  color: #555;
+  backdrop-filter: blur(6px);
+}
